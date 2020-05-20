@@ -1,0 +1,16 @@
+package ${package}.service;
+
+import ${package}.jdbc.domain.${className};
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ${className}Service extends BaseService<${className}, Long>{
+
+}

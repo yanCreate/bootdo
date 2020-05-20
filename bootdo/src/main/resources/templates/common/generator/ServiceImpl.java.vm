@@ -1,0 +1,27 @@
+package ${package}.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+import ${package}.jdbc.mapper.${className}Mapper;
+import ${package}.jdbc.domain.${className};
+import ${package}.service.${className}Service;
+
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Service
+public class ${className}ServiceImpl implements ${className}Service {
+
+    private static final Logger logger = LoggerFactory.getLogger(${className}ServiceImpl.class);
+    @Autowired
+    private ${className}Mapper ${classname}Mapper;
+	
+}

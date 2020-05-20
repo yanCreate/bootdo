@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${package}.jdbc.mapper.${className}Mapper">
+
+    <resultMap id="BaseResultMap" type="${package}.jdbc.domain.${className}">
+        #foreach($column in $columns)
+            <result column="$column.columnName" property="$column.attrname"/>
+        #end
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    #foreach($column in $columns)`$column.columnName`#if($velocityCount != $columns.size()),#end#end
+    </sql>
+
+    <insert id="save" parameterType="${package}.jdbc.domain.${className}">
+        insert into ${tableName}
+        (
+        #foreach($column in $columns)
+            #if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+                `$column.columnName`#if($velocityCount != $columns.size()), #end
+
+            #end
+        #end
+        )
+        values
+        (
+        #foreach($column in $columns)
+            #if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+                #{$column.attrname}#if($velocityCount != $columns.size()), #end
+
+            #end
+        #end
+        )
+    </insert>
+
+    <update id="update" parameterType="${package}.jdbc.domain.${className}">
+        update ${tableName}
+        <set>
+            #foreach($column in $columns)
+                #if($column.columnName != $pk.columnName)
+                    `$column.columnName` = #{$column.attrname},
+                #end
+            #end
+        </set>
+        where ${pk.columnName} = #{${pk.attrname}}
+    </update>
+
+    <update id="updateSelective" parameterType="java.util.HashMap">
+        update ${tableName}
+        <set>
+            #foreach($column in $columns)
+                #if($column.columnName != $pk.columnName)
+                    <if test="$column.attrname != null">`$column.columnName` = #{$column.attrname}#if($velocityCount != $columns.size()), #end</if>
+                #end
+            #end
+        </set>
+        where ${pk.columnName} = #{${pk.attrname}}
+    </update>
+
+    <select id="findByPrimary" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"></include> from ${tableName} where ${pk.columnName} = #{value}
+    </select>
+
+    <select id="findSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select <include refid="Base_Column_List"></include> from ${tableName}
+        <where>
+            #foreach($column in $columns)
+                <if test="$column.attrname != null and $column.attrname.trim() != ''"> and $column.columnName = #{$column.attrname} </if>
+            #end
+        </where>
+    </select>
+
+    <select id="listSelective"  resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select <include refid="Base_Column_List"></include> from ${tableName}
+        <where>
+            #foreach($column in $columns)
+                <if test="$column.attrname != null and $column.attrname.trim() != ''"> and $column.columnName = #{$column.attrname} </if>
+            #end
+        </where>
+    </select>
+
+</mapper>
